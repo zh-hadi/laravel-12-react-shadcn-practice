@@ -1,7 +1,7 @@
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, Link } from '@inertiajs/react';
 import { Product, columns } from "./columns"
 import { DataTable } from "./data-table"
 import { Button } from '@/components/ui/button';
@@ -22,12 +22,16 @@ import {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
+        title: 'Dashboard',
+        href: '/dashboard',
+    },
+    {
         title: 'Products',
         href: '/products',
     },
 ];
 
-export default function Index({products}: {products: Product[]}) {
+export default function Index({products, flash}: {products: Product[], flash: any}) {
 
     const [value, setValue] = useState({
         name: '',
@@ -37,7 +41,7 @@ export default function Index({products}: {products: Product[]}) {
     });
 
 
-    const handelSubmit = (e) => {
+    const handelSubmit = (e: any) => {
         e.preventDefault();
         router.post('/products', value)
     }
@@ -49,8 +53,19 @@ export default function Index({products}: {products: Product[]}) {
             <Head title="Products" />
             <div className='p-10'>
 
+            {flash.success && (
+                <div>{flash.success}</div>
+            )}
+
             <div>
             
+                <div>
+                    <Link href="/products/create" >
+                        <Button>
+                            <SquarePen /> Add Product
+                        </Button>
+                    </Link>
+                </div>
             <Dialog>
                 <DialogTrigger asChild>
                 <Button>
