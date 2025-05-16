@@ -2,11 +2,13 @@ import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, Link } from '@inertiajs/react';
-import { Product, columns } from "./columns"
+import {  columns } from "./columns"
 import { DataTable } from "./data-table"
 import { Button } from '@/components/ui/button';
 import { SquarePen } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+// import echo from '@/echo';
 
 import {
     Dialog,
@@ -20,6 +22,8 @@ import {
   import { Input } from "@/components/ui/input"
   import { Label } from "@/components/ui/label"
 
+  import { Product, User } from '@/types'
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -31,7 +35,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index({products, flash}: {products: Product[], flash: any}) {
+export default function Index({user, products, flash}: {user: User, products: Product[], flash: any}) {
 
     const [value, setValue] = useState({
         name: '',
@@ -45,6 +49,21 @@ export default function Index({products, flash}: {products: Product[], flash: an
         e.preventDefault();
         router.post('/products', value)
     }
+
+
+    useEffect(()=> {
+        window.Echo?.private(`product.${user.id}`)
+        .listen('ProductDeleteResponseInAdmin', (event: any) => {
+            console.log(event);
+        });
+
+        // window.Echo.channel('test-channel')
+        // .listen('.dummy.event', (e) => {
+        //     console.log('Dummy Event Received:', e.message);
+        // });
+    }, []);
+
+   
 
 
 

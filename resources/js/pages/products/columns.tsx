@@ -6,6 +6,8 @@ import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
  
 import { Button } from "@/components/ui/button"
+import { Switch } from "@/components/ui/switch"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useState } from "react"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -61,6 +64,26 @@ export const columns: ColumnDef<Product>[] = [
             return <Badge variant="destructive">Inactive</Badge>
         }
     }
+  },
+  {
+    header: "Toggle",
+    id: "toggle",
+    cell: ({row}) => {
+      const data = row.original;
+      const [isActive, setIsActive] = useState(data.status == 'active' ? true : false)
+
+      
+
+      return (
+        <div>
+
+          <Switch checked={isActive} onClick={() => {
+            router.post(route('products.status', data.id),{}, {preserveScroll: true});
+            setIsActive(!isActive);
+          }}/>
+        </div>
+      )
+    },
   },
   {
     header: "Action",
