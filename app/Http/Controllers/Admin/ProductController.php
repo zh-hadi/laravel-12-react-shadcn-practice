@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Events\TestEvent;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -31,23 +32,12 @@ class ProductController extends Controller
         
         // $admin = User::where('is_admin', 1)->first();
 
-        $admin = User::where('is_admin', 1)->first();
-
-        // Check if $admin is found
-        if (!$admin) {
-            \Log::error("No admin user found.");
-            return redirect()->back()->with('error', 'No admin found to handle the broadcast.');
-        }
-        
-        try {
-            \Log::info("Dispatching ProductDeleteResponseInAdmin event for product: {$product->id}");
-            broadcast(new ProductDeleteResponseInAdmin($product, $admin))->toOthers();
-        } catch (\Exception $e) {
-            \Log::error('Broadcast error: ' . $e->getMessage());
-        }
+       
 
 
+       
         $product->delete();
+
 
         return redirect()->back()->with('success', 'Product Deleted Successfully!');
     }
@@ -64,12 +54,33 @@ class ProductController extends Controller
 
         Product::create($attributes);
 
+        
+
 
         return redirect()->back()->with('success', 'Product Add Successfully!');
     }
 
     public function status(Product $product)
     {
+        event(new TestEvent($product));
+
+
+        $admin = User::where('is_admin', 1)->first();
+
+        // Check if $admin is found
+        if (!$admin) {
+            \Log::error("No admin user found.");
+            return redirect()->back()->with('error', 'No admin found to handle the broadcast.');
+        }
+        
+        try {
+            \Log::info("Dispatching ProductDeleteResponseInAdmin event for product: {$product->id}");
+            broadcast(new ProductDeleteResponseInAdmin($product, $admin))->toOthers();
+        } catch (\Exception $e) {
+            \Log::error('Broadcast error: ' . $e->getMessage());
+        }
+
+        
         $product->status = $product->status == 'active' ? 'inactive' : 'active';
         $product->save();
         return redirect()->back()->with("success", 'Product Status Update Successfully');
