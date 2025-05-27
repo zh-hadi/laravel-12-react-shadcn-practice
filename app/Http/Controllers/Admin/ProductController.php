@@ -55,9 +55,10 @@ class ProductController extends Controller
         Product::create($attributes);
 
         
-
-
-        return redirect()->back()->with('success', 'Product Add Successfully!');
+ 
+        // return redirect()->route('abort.check');
+        // return redirect()->back()->with('success', 'Product Add Successfully!');
+        return redirect()->route('products.index')->with('success', 'Product Add Successfully!');
     }
 
     public function status(Product $product)

@@ -24,5 +24,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('products/{product}', [ ProductController::class, 'status'])->name('products.status');
 });
 
+
+// class Service {
+//     public function info()
+//     {
+//         return "hello world";
+//     }
+// }
+
+// Route::get("/service", function(Service $service){
+//     return $service->info();
+// });
+
+Route::get('/abort', function(){
+    abort(404);
+})->name('abort.check');
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
